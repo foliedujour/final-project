@@ -69,10 +69,15 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
+            Jws<Claims> claimsJws = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .setAllowedClockSkewSeconds(300) // Allow 5 minutes of clock skew
+                    .build()
+                    .parseClaimsJws(token);
+            System.out.println("Token claims: " + claimsJws.getBody());
             return true;
-        } catch (MalformedJwtException | ExpiredJwtException |
-        UnsupportedJwtException | IllegalArgumentException e) {
+        } catch (JwtException | IllegalArgumentException e) {
+            System.out.println("Token validation error: " + e.getMessage());
             return false;
         }
     }

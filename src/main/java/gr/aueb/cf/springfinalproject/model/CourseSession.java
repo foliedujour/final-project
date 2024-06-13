@@ -1,6 +1,5 @@
 package gr.aueb.cf.springfinalproject.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +9,6 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,6 +33,10 @@ public class CourseSession extends AbstractEntity {
     @OneToMany(mappedBy = "courseSession", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Booking> bookings = new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
+
     public CourseSession(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
@@ -49,4 +51,6 @@ public class CourseSession extends AbstractEntity {
         bookings.add(booking);
         booking.setCourseSession(this);
     }
+
+
 }

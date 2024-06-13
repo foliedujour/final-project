@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,9 +29,20 @@ public class Course extends AbstractEntity{
     @Getter(AccessLevel.PROTECTED)
     private Set<CourseSession> sessions = new HashSet<>();
 
+    @ManyToMany
+    @Getter(AccessLevel.PROTECTED)
+
+    @JoinTable(
+            name = "course_instructors",
+            joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "instructor_id", referencedColumnName = "id")
+    )
+    private Set<Instructor> instructors = new HashSet<>();
+
 public Course(String title) {
         this.title = title;
         this.sessions = new HashSet<>();
+        this.instructors = new HashSet<>();
     }
 
 
@@ -39,9 +51,17 @@ public Course(String title) {
         return Collections.unmodifiableSet(sessions);
     }
 
+
     public void addSession(CourseSession session) {
         sessions.add(session);
         session.setCourse(this);
+    }
+
+    public Set<Instructor> fetchAllInstructors() { return Collections.unmodifiableSet(instructors); }
+
+    public void addInstructor(Instructor instructor) {
+        instructors.add(instructor);
+        instructor.getCourses().add(this);
     }
 
 

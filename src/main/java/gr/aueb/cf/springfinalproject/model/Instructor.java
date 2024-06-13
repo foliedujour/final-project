@@ -1,14 +1,12 @@
 package gr.aueb.cf.springfinalproject.model;
 
 import jakarta.annotation.Nullable;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,9 +26,13 @@ public class Instructor extends AbstractEntity {
     @Getter(AccessLevel.PROTECTED)
     private Set<CourseSession> courseSessions = new HashSet<>();
 
+    @ManyToMany(mappedBy = "instructors")
+    private Set<Course> courses = new HashSet<>();
+
     public Instructor(String firstName) {
         this.firstName = firstName;
         this.courseSessions = new HashSet<>();
+        this.courses = new HashSet<>();
     }
 
     public Set<CourseSession> fetchAllCourseSessions() {
@@ -40,5 +42,12 @@ public class Instructor extends AbstractEntity {
     public void addCourseSession(CourseSession courseSession) {
         courseSessions.add(courseSession);
         courseSession.setInstructor(this);
+    }
+
+    public Set<Course> fetchAllCourses() { return Collections.unmodifiableSet(courses); }
+
+    public void addCourse(Course course) {
+        courses.add(course);
+        course.getInstructors().add(this);
     }
 }

@@ -11,11 +11,13 @@ import org.springframework.context.annotation.Bean;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.TimeZone;
 
 @SpringBootApplication
 public class SpringFinalProjectApplication {
 
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Athens"));
         SpringApplication.run(SpringFinalProjectApplication.class, args);
     }
 
