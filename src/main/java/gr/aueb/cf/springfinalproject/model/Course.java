@@ -30,8 +30,6 @@ public class Course extends AbstractEntity{
     private Set<CourseSession> sessions = new HashSet<>();
 
     @ManyToMany
-    @Getter(AccessLevel.PROTECTED)
-
     @JoinTable(
             name = "course_instructors",
             joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id"),

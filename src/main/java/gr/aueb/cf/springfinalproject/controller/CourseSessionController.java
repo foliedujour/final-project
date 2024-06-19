@@ -2,6 +2,8 @@ package gr.aueb.cf.springfinalproject.controller;
 
 import gr.aueb.cf.springfinalproject.model.CourseSession;
 import gr.aueb.cf.springfinalproject.service.CourseSessionServiceImpl;
+import gr.aueb.cf.springfinalproject.service.exceptions.InstructorNotAvailableException;
+import gr.aueb.cf.springfinalproject.service.exceptions.RoomNotAvailableException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -57,4 +59,5 @@ public class CourseSessionController {
     ) {
         return courseSessionService.isRoomAvailable(roomId, startDateTime, endDateTime);
     }
+
 }

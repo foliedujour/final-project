@@ -43,7 +43,7 @@ public class CourseSession extends AbstractEntity {
         this.bookings = new HashSet<>();
     }
 
-    public Set<Booking> getAllBookings() {
+    public Set<Booking> fetchAllBookings() {
         return Collections.unmodifiableSet(bookings);
     }
 

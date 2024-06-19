@@ -1,8 +1,10 @@
 package gr.aueb.cf.springfinalproject.model;
 
-import jakarta.annotation.Nullable;
+
 import jakarta.persistence.*;
+
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -17,20 +19,29 @@ import java.util.Set;
 @AllArgsConstructor
 public class Instructor extends AbstractEntity {
 
-    private String firstName;
 
-    @Nullable
-    private String lastName;
+    @Column(nullable = false)
+    private String firstname;
+
+    @Column(nullable = false)
+    private String lastname;
+
+    @Column(nullable = false, unique = true, length = 5)
+    @Length(min = 5, max = 5, message = "SSN length must be exactly 5 digits")
+    private String ssn;
 
     @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter(AccessLevel.PROTECTED)
     private Set<CourseSession> courseSessions = new HashSet<>();
 
     @ManyToMany(mappedBy = "instructors")
+    @Getter(AccessLevel.PROTECTED)
     private Set<Course> courses = new HashSet<>();
 
-    public Instructor(String firstName) {
-        this.firstName = firstName;
+    public Instructor(String firstname, String lastname, String ssn) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.ssn = ssn;
         this.courseSessions = new HashSet<>();
         this.courses = new HashSet<>();
     }

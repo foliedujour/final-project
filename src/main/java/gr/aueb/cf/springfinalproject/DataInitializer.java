@@ -24,8 +24,8 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         TimeZone.setDefault(TimeZone.getTimeZone("Europe/Athens"));
-        Instructor instructor = new Instructor("John");
-        Instructor instructor1 = new Instructor("Dorita");
+        Instructor instructor = new Instructor("John", "Giagkos", "12345");
+        Instructor instructor1 = new Instructor("Dorita", "Alexandrou", "24568");
         instructorRepository.save(instructor);
         instructorRepository.save(instructor1);
 
