@@ -43,6 +43,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
                 .claim("roles", List.of(userPrincipal.getAuthorities()))
+                .claim("userId", userPrincipal.getId())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
@@ -56,6 +57,15 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
+    }
+
+    public Long getUserIdFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("userId", Long.class);
     }
 
     public List<String> getRolesFromToken(String token) {

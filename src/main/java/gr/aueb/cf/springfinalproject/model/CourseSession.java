@@ -1,10 +1,8 @@
 package gr.aueb.cf.springfinalproject.model;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -19,25 +17,35 @@ import java.util.Set;
 @Setter
 public class CourseSession extends AbstractEntity {
 
+    @Nonnull
     private LocalDateTime startDateTime;
+
+    @Nonnull
     private LocalDateTime endDateTime;
 
+    @Nonnull
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @Nonnull
     @ManyToOne
     @JoinColumn(name = "instructor_id")
     private Instructor instructor;
 
     @OneToMany(mappedBy = "courseSession", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter(AccessLevel.PROTECTED)
     private Set<Booking> bookings = new HashSet<>();
 
+    @Nonnull
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
 
-    public CourseSession(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+
+
+    public CourseSession(@Nonnull LocalDateTime startDateTime,
+                         @Nonnull LocalDateTime endDateTime) {
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.bookings = new HashSet<>();
@@ -48,6 +56,7 @@ public class CourseSession extends AbstractEntity {
     }
 
     public void addBooking(Booking booking) {
+
         bookings.add(booking);
         booking.setCourseSession(this);
     }

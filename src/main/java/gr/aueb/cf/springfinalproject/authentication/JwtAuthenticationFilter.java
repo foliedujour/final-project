@@ -1,5 +1,6 @@
 package gr.aueb.cf.springfinalproject.authentication;
 
+import gr.aueb.cf.springfinalproject.model.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,6 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (jwt != null && tokenProvider.validateToken(jwt)) {
             System.out.println(tokenProvider.validateToken(jwt));
             String username = tokenProvider.getUsernameFromToken(jwt);
+            Long id = tokenProvider.getUserIdFromToken(jwt);
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());

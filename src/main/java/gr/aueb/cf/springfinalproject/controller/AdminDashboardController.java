@@ -9,10 +9,7 @@ import gr.aueb.cf.springfinalproject.model.Instructor;
 import gr.aueb.cf.springfinalproject.service.CourseServiceImpl;
 import gr.aueb.cf.springfinalproject.service.CourseSessionServiceImpl;
 import gr.aueb.cf.springfinalproject.service.InstructorServiceImpl;
-import gr.aueb.cf.springfinalproject.service.exceptions.InstructorAlreadyExistException;
-import gr.aueb.cf.springfinalproject.service.exceptions.InstructorNotAvailableException;
-import gr.aueb.cf.springfinalproject.service.exceptions.InstructorNotFoundException;
-import gr.aueb.cf.springfinalproject.service.exceptions.RoomNotAvailableException;
+import gr.aueb.cf.springfinalproject.service.exceptions.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +57,17 @@ public class AdminDashboardController {
             return new ResponseEntity<>(createdCourse, HttpStatus.CREATED);
         } catch (InstructorNotFoundException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/course-sessions/{id}")
+    public ResponseEntity<?> deleteCourseSession(@PathVariable Long id) {
+        try {
+            courseSessionService.deleteCourseSession(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (CourseSessionNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }

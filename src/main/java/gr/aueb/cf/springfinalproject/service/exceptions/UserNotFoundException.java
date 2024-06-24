@@ -4,13 +4,13 @@ import gr.aueb.cf.springfinalproject.model.User;
 
 import java.io.Serial;
 
-public class UserNotFoundException extends Exception {
+public class UserNotFoundException extends RuntimeException {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public UserNotFoundException(User user) {
-        super("User with id " + user.getId() + " not found.");
+    public UserNotFoundException(Long id) {
+        super("User with id " + id + " not found.");
     }
 
 

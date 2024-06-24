@@ -1,5 +1,6 @@
 package gr.aueb.cf.springfinalproject.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class CreateCourseDTO {
 
-    @NotNull(message = "Course title is required")
+    @NotBlank(message = "Course title is required")
     private String title;
 
     private String description;

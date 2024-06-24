@@ -55,6 +55,8 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/login/**").permitAll()
+                        .requestMatchers("api/bookings/isBooked").permitAll()
+                        .requestMatchers("api/course-sessions/week").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/user/**").hasRole("USER")
                         .anyRequest().authenticated())

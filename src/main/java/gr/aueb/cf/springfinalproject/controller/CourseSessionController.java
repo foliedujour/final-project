@@ -1,5 +1,6 @@
 package gr.aueb.cf.springfinalproject.controller;
 
+import gr.aueb.cf.springfinalproject.dto.CourseSessionDTO;
 import gr.aueb.cf.springfinalproject.model.CourseSession;
 import gr.aueb.cf.springfinalproject.service.CourseSessionServiceImpl;
 import gr.aueb.cf.springfinalproject.service.exceptions.InstructorNotAvailableException;
@@ -30,9 +31,9 @@ public class CourseSessionController {
     }
 
     @GetMapping("/week")
-    public ResponseEntity<List<CourseSession>> getCourseSessionsByWeek(
+    public ResponseEntity<List<CourseSessionDTO>> getCourseSessionsByWeek(
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) java.time.LocalDateTime date) {
-        List<CourseSession> courseSessions = courseSessionService.getAllCourseSessionsByWeek(date);
+        List<CourseSessionDTO> courseSessions = courseSessionService.getAllCourseSessionsByWeek(date);
         return new ResponseEntity<>(courseSessions, HttpStatus.OK);
     }
 

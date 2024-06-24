@@ -19,7 +19,6 @@ import java.util.Set;
 @Setter
 public class Course extends AbstractEntity{
 
-
     private String title;
 
     @Nullable
@@ -37,18 +36,16 @@ public class Course extends AbstractEntity{
     )
     private Set<Instructor> instructors = new HashSet<>();
 
-public Course(String title) {
+
+    public Course(String title) {
         this.title = title;
         this.sessions = new HashSet<>();
         this.instructors = new HashSet<>();
     }
 
-
-
     public Set<CourseSession> fetchAllSessions() {
         return Collections.unmodifiableSet(sessions);
     }
-
 
     public void addSession(CourseSession session) {
         sessions.add(session);

@@ -1,5 +1,6 @@
 package gr.aueb.cf.springfinalproject.service;
 
+import gr.aueb.cf.springfinalproject.dto.CourseSessionDTO;
 import gr.aueb.cf.springfinalproject.dto.CreateCourseSessionDTO;
 import gr.aueb.cf.springfinalproject.model.Course;
 import gr.aueb.cf.springfinalproject.model.CourseSession;
@@ -9,16 +10,19 @@ import gr.aueb.cf.springfinalproject.repository.CourseRepository;
 import gr.aueb.cf.springfinalproject.repository.CourseSessionRepository;
 import gr.aueb.cf.springfinalproject.repository.InstructorRepository;
 import gr.aueb.cf.springfinalproject.repository.RoomRepository;
+import gr.aueb.cf.springfinalproject.service.exceptions.CourseSessionNotFoundException;
 import gr.aueb.cf.springfinalproject.service.exceptions.InstructorNotAvailableException;
 import gr.aueb.cf.springfinalproject.service.exceptions.RoomNotAvailableException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
@@ -37,12 +41,24 @@ public class CourseSessionServiceImpl implements ICourseSessionService {
     }
 
     @Override
-    public List<CourseSession> getAllCourseSessionsByWeek(LocalDateTime date) {
-        LocalDateTime startOfWeek = date.with(TemporalAdjusters.previousOrSame(LocalDate.now().getDayOfWeek())).withHour(0).withMinute(0).withSecond(0);
-        LocalDateTime endOfWeek = date.with(TemporalAdjusters.nextOrSame(LocalDate.now().plusDays(6).getDayOfWeek())).withHour(23).withMinute(59).withSecond(59);
+    public List<CourseSessionDTO> getAllCourseSessionsByWeek(LocalDateTime date) {
+        LocalDateTime startOfWeek = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime endOfWeek = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).withHour(23).withMinute(59).withSecond(59);
+        List<CourseSession> courseSessions = courseSessionRepository.findByStartDateTimeBetween(startOfWeek, endOfWeek);
 
-        return courseSessionRepository.findByStartDateTimeBetween(startOfWeek, endOfWeek);
+
+        return courseSessions.stream()
+                .map(courseSession -> new CourseSessionDTO(
+                        courseSession.getId(),
+                        courseSession.getCourse().getTitle(),
+                        courseSession.getInstructor().getFirstname(),
+                        courseSession.getStartDateTime(),
+                        courseSession.getEndDateTime(),
+                        courseSession.getRoom().getName()))
+                .collect(Collectors.toList());
     }
+
+
 
     @Override
     public List<CourseSession> getAllCourseSessionsByMonth(LocalDateTime date) {
@@ -100,6 +116,13 @@ public class CourseSessionServiceImpl implements ICourseSessionService {
 
 
         return courseSessionRepository.save(courseSession);
+    }
+
+    @Override
+    public void deleteCourseSession(Long courseSessionId) {
+        CourseSession courseSession = courseSessionRepository.findById(courseSessionId)
+                .orElseThrow(() -> new CourseSessionNotFoundException(courseSessionId));
+        courseSessionRepository.delete(courseSession);
     }
 
 }
