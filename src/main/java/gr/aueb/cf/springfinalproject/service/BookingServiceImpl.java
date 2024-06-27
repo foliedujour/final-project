@@ -7,10 +7,7 @@ import gr.aueb.cf.springfinalproject.model.User;
 import gr.aueb.cf.springfinalproject.repository.BookingRepository;
 import gr.aueb.cf.springfinalproject.repository.CourseSessionRepository;
 import gr.aueb.cf.springfinalproject.repository.UserRepository;
-import gr.aueb.cf.springfinalproject.service.exceptions.BookingConflictException;
-import gr.aueb.cf.springfinalproject.service.exceptions.CourseSessionNotFoundException;
-import gr.aueb.cf.springfinalproject.service.exceptions.RoomCapacityExceededException;
-import gr.aueb.cf.springfinalproject.service.exceptions.UserNotFoundException;
+import gr.aueb.cf.springfinalproject.service.exceptions.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,6 +60,32 @@ public class BookingServiceImpl implements IBookingService {
     }
 
     @Override
+    public BookingResponseDTO unBookSession(BookingRequestDTO bookingRequestDTO) throws CourseSessionNotFoundException, UserNotFoundException, BookingNotFoundException {
+        CourseSession session = courseSessionRepository.findById(bookingRequestDTO.getCourseSessionId())
+                .orElseThrow(() -> new CourseSessionNotFoundException(bookingRequestDTO.getCourseSessionId()));
+
+        User user = userRepository.findById(bookingRequestDTO.getUserId())
+                .orElseThrow(() -> new UserNotFoundException(bookingRequestDTO.getUserId()));
+
+
+        Booking existingBooking = bookingRepository.findUserBookingForSession(user.getId(), session.getId());
+        if (existingBooking == null) {
+            throw new BookingNotFoundException(session.getId());
+        }
+
+        user.removeBooking(existingBooking);
+        session.removeBooking(existingBooking);
+        bookingRepository.delete(existingBooking);
+
+        UserDTO userDTO = new UserDTO(user.getId(), user.getUsername(), user.getRole());
+        BookingDTO bookingDTO = new BookingDTO(existingBooking.getId(), session.getId(),
+                existingBooking.getStartTime(), existingBooking.getEndTime(), userDTO);
+
+        return new BookingResponseDTO(bookingDTO, true, "You successfully unbooked for this session");
+    }
+
+
+    @Override
     public List<CourseSessionDTO> getUserCourseSessions(Long userId) throws CourseSessionNotFoundException, UserNotFoundException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -72,6 +95,7 @@ public class BookingServiceImpl implements IBookingService {
                 .map(courseSession -> new CourseSessionDTO(
                         courseSession.getId(),
                         courseSession.getCourse().getTitle(),
+                        courseSession.getCourse().getDescription(),
                         courseSession.getInstructor().getFirstname(),
                         courseSession.getStartDateTime(),
                         courseSession.getEndDateTime(),

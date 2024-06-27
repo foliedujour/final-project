@@ -44,6 +44,9 @@ public class DataInitializer implements CommandLineRunner {
        Course course = new Course("Yoga Class");
        Course course1 = new Course("Pilates");
        course.addInstructor(instructor);
+       course.setDescription("Explore the world of meditation " +
+               "and total relaxation with yoga. Our classes dive deep into the ancient " +
+               "roots of yoga in both a spiritual and physical manner. Do not miss on this amazing journey");
        course.addInstructor(instructor1);
 
 

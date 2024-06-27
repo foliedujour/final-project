@@ -56,9 +56,12 @@ public class CourseSession extends AbstractEntity {
     }
 
     public void addBooking(Booking booking) {
-
         bookings.add(booking);
         booking.setCourseSession(this);
+    }
+
+    public void removeBooking(Booking booking) {
+        bookings.remove(booking);
     }
 
 

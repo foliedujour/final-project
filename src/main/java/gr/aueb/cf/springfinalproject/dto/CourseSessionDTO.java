@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class CourseSessionDTO {
     private Long id;
     private String courseTitle;
+    private String description;
     private String instructorName;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;

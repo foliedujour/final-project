@@ -12,6 +12,7 @@ import gr.aueb.cf.springfinalproject.repository.InstructorRepository;
 import gr.aueb.cf.springfinalproject.repository.RoomRepository;
 import gr.aueb.cf.springfinalproject.service.exceptions.CourseSessionNotFoundException;
 import gr.aueb.cf.springfinalproject.service.exceptions.InstructorNotAvailableException;
+import gr.aueb.cf.springfinalproject.service.exceptions.InstructorNotFoundException;
 import gr.aueb.cf.springfinalproject.service.exceptions.RoomNotAvailableException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,7 @@ public class CourseSessionServiceImpl implements ICourseSessionService {
                 .map(courseSession -> new CourseSessionDTO(
                         courseSession.getId(),
                         courseSession.getCourse().getTitle(),
+                        courseSession.getCourse().getDescription(),
                         courseSession.getInstructor().getFirstname(),
                         courseSession.getStartDateTime(),
                         courseSession.getEndDateTime(),
@@ -83,28 +85,30 @@ public class CourseSessionServiceImpl implements ICourseSessionService {
 
     @Override
     public CourseSession createCourseSession(CreateCourseSessionDTO createCourseSessionDTO) {
-        Long instructorId = createCourseSessionDTO.getInstructorId();
-        Long roomId = createCourseSessionDTO.getRoomId();
-        LocalDateTime startDateTime = createCourseSessionDTO.getStartDateTime();
-        LocalDateTime endDateTime = createCourseSessionDTO.getEndDateTime();
+        Instructor instructor = instructorRepository.findById(createCourseSessionDTO.getInstructorId())
+                .orElseThrow(() -> new InstructorNotFoundException(createCourseSessionDTO.getInstructorId()));
 
-        boolean isInstructorAvailable = isInstructorAvailable(instructorId, startDateTime, endDateTime);
-        boolean isRoomAvailable = isRoomAvailable(roomId, startDateTime, endDateTime);
 
-        if (!isInstructorAvailable) {
-            throw new InstructorNotAvailableException(instructorId);
-        }
-
-        if (!isRoomAvailable) {
-            throw new RoomNotAvailableException(roomId);
-        }
+        Room room = roomRepository.findById(createCourseSessionDTO.getRoomId())
+                .orElseThrow(() -> new RuntimeException("Room not found"));
 
         Course course = courseRepository.findById(createCourseSessionDTO.getCourseId())
                 .orElseThrow(() -> new RuntimeException("Course not found"));
-        Instructor instructor = instructorRepository.findById(instructorId)
-                .orElseThrow(() -> new RuntimeException("Instructor not found"));
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+
+        LocalDateTime startDateTime = createCourseSessionDTO.getStartDateTime();
+
+        LocalDateTime endDateTime = createCourseSessionDTO.getEndDateTime();
+
+        boolean isInstructorAvailable = isInstructorAvailable(instructor.getId(), startDateTime, endDateTime);
+        boolean isRoomAvailable = isRoomAvailable(room.getId(), startDateTime, endDateTime);
+
+        if (!isInstructorAvailable) {
+            throw new InstructorNotAvailableException(instructor.getId());
+        }
+
+        if (!isRoomAvailable) {
+            throw new RoomNotAvailableException(room.getId());
+        }
 
         CourseSession courseSession = new CourseSession();
         course.addSession(courseSession);
@@ -112,8 +116,6 @@ public class CourseSessionServiceImpl implements ICourseSessionService {
         room.addSession(courseSession);
         courseSession.setStartDateTime(startDateTime);
         courseSession.setEndDateTime(endDateTime);
-
-
 
         return courseSessionRepository.save(courseSession);
     }
