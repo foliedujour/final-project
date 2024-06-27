@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,7 +30,7 @@ public class BookingServiceImpl implements IBookingService {
     @Override
     public BookingResponseDTO bookSession(BookingRequestDTO bookingRequestDTO)
             throws CourseSessionNotFoundException, UserNotFoundException,
-            BookingConflictException, RoomCapacityExceededException {
+            BookingConflictException, RoomCapacityExceededException, BookPastSessionException {
         CourseSession courseSession = courseSessionRepository.findById(bookingRequestDTO.getCourseSessionId())
                 .orElseThrow(() -> new CourseSessionNotFoundException(bookingRequestDTO.getCourseSessionId()));
 
@@ -38,6 +40,10 @@ public class BookingServiceImpl implements IBookingService {
         Booking existingBooking = bookingRepository.findUserBookingForSession(user.getId(), courseSession.getId());
         if (existingBooking != null) {
             throw new BookingConflictException("User has already booked fot this session.");
+        }
+
+        if (courseSession.getStartDateTime().isBefore(LocalDateTime.now())) {
+            throw new BookPastSessionException(courseSession.getId());
         }
 
         Set<Booking> bookingsForCourseSession = courseSession.fetchAllBookings();

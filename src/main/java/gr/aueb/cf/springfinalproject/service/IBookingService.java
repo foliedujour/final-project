@@ -10,7 +10,8 @@ import java.util.List;
 public interface IBookingService {
     BookingResponseDTO bookSession(BookingRequestDTO bookingRequestDTO)
             throws CourseSessionNotFoundException, UserNotFoundException,
-            BookingConflictException, RoomCapacityExceededException;
+            BookingConflictException, RoomCapacityExceededException,
+            BookPastSessionException;
 
     BookingResponseDTO unBookSession(BookingRequestDTO bookingRequestDTO)
             throws CourseSessionNotFoundException, UserNotFoundException,

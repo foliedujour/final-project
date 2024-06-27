@@ -10,6 +10,11 @@ import gr.aueb.cf.springfinalproject.service.CourseServiceImpl;
 import gr.aueb.cf.springfinalproject.service.CourseSessionServiceImpl;
 import gr.aueb.cf.springfinalproject.service.InstructorServiceImpl;
 import gr.aueb.cf.springfinalproject.service.exceptions.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
+@Tag(name = "Admin Dashboard", description = "Admin Dashboard Management APIs")
 public class AdminDashboardController {
 
     private final CourseSessionServiceImpl courseSessionService;
@@ -29,7 +35,13 @@ public class AdminDashboardController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/course-sessions")
-    public ResponseEntity<?> createCourseSession(@RequestBody CreateCourseSessionDTO dto) {
+    @Operation(summary = "Creates a new course session", description = "Creates a new course session with the provided details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Course session created successfully"),
+            @ApiResponse(responseCode = "400", description = "Instructor or Room not available")
+    })
+    public ResponseEntity<?> createCourseSession(
+            @RequestBody CreateCourseSessionDTO dto) {
         try {
             CourseSession createdCourseSession = courseSessionService.createCourseSession(dto);
             return ResponseEntity.ok(createdCourseSession);
@@ -40,7 +52,13 @@ public class AdminDashboardController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/instructors")
-    public ResponseEntity<?> insertInstructor(@Valid @RequestBody RegisterInstructorDTO dto) {
+    @Operation(summary = "Registers a new instructor", description = "Registers a new instructor with the provided details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Instructor registered successfully"),
+            @ApiResponse(responseCode = "409", description = "Instructor already exists")
+    })
+    public ResponseEntity<?> insertInstructor(
+            @Valid @RequestBody RegisterInstructorDTO dto) {
         try {
             Instructor createdInstructor = instructorService.insertInstructor(dto);
             return new ResponseEntity<>(createdInstructor, HttpStatus.CREATED);
@@ -51,7 +69,13 @@ public class AdminDashboardController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/courses")
-    public ResponseEntity<?> createCourse(@Valid @RequestBody CreateCourseDTO createCourseDTO) {
+    @Operation(summary = "Creates a new course", description = "Creates a new course with the provided details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Course created successfully"),
+            @ApiResponse(responseCode = "400", description = "Instructor not found")
+    })
+    public ResponseEntity<?> createCourse(
+            @Valid @RequestBody CreateCourseDTO createCourseDTO) {
         try {
             Course createdCourse = courseService.createCourse(createCourseDTO);
             return new ResponseEntity<>(createdCourse, HttpStatus.CREATED);
@@ -62,7 +86,14 @@ public class AdminDashboardController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/course-sessions/{id}")
-    public ResponseEntity<?> deleteCourseSession(@PathVariable Long id) {
+    @Operation(summary = "Delete a course session", description = "Deletes a course session with the given ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Course session deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Course session not found")
+    })
+    public ResponseEntity<?> deleteCourseSession(
+            @Parameter(description = "Course session ID", required = true)
+            @PathVariable Long id) {
         try {
             courseSessionService.deleteCourseSession(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

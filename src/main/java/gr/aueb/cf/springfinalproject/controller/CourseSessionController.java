@@ -19,28 +19,36 @@ import java.util.List;
 @RequestMapping("/api/course-sessions")
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
+
 public class CourseSessionController {
 
 
     private final CourseSessionServiceImpl courseSessionService;
 
     @GetMapping()
+
     public ResponseEntity<List<CourseSession>> getAllCourseSessions() {
         List<CourseSession> courseSessions = courseSessionService.getAllCourseSessions();
         return new ResponseEntity<>(courseSessions, HttpStatus.OK);
     }
 
+
     @GetMapping("/week")
     public ResponseEntity<List<CourseSessionDTO>> getCourseSessionsByWeek(
+
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) java.time.LocalDateTime date) {
         List<CourseSessionDTO> courseSessions = courseSessionService.getAllCourseSessionsByWeek(date);
         return new ResponseEntity<>(courseSessions, HttpStatus.OK);
     }
 
     @GetMapping("/check-instructor-availability")
+
     public boolean checkInstructorAvailability(
+
             @RequestParam("instructorId") Long instructorId,
+
             @RequestParam("startDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTime,
+
             @RequestParam("endDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDateTime
     ) {
 
@@ -53,9 +61,13 @@ public class CourseSessionController {
     }
 
     @GetMapping("/check-room-availability")
+
     public boolean checkRoomAvailability(
+
             @RequestParam Long roomId,
+
             @RequestParam LocalDateTime startDateTime,
+
             @RequestParam LocalDateTime endDateTime
     ) {
         return courseSessionService.isRoomAvailable(roomId, startDateTime, endDateTime);

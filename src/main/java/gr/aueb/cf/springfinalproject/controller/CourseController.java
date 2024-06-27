@@ -15,19 +15,24 @@ import java.util.Set;
 @RequestMapping("/api/courses")
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
+
 public class CourseController {
 
 
     private final CourseServiceImpl courseService;
 
     @GetMapping()
+
     public ResponseEntity<List<Course>> getAllCourses() {
         List<Course> courses = courseService.getAllCourses();
         return ResponseEntity.ok(courses);
     }
 
     @GetMapping("/{courseId}/instructors")
-    public Set<Instructor> getInstructorsForCourse(@PathVariable Long courseId) {
+
+    public Set<Instructor> getInstructorsForCourse(
+
+            @PathVariable Long courseId) {
         return courseService.fetchAllInstructorsForCourse(courseId);
     }
 }

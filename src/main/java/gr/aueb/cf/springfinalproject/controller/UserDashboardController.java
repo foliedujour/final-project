@@ -38,7 +38,7 @@ public class UserDashboardController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BookingResponseDTO(null, false, e.getMessage()));
         } catch (BookingConflictException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new BookingResponseDTO(null, false, e.getMessage()));
-        } catch (RoomCapacityExceededException e) {
+        } catch (RoomCapacityExceededException | BookPastSessionException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BookingResponseDTO(null, false, e.getMessage()));
         }
     }
@@ -51,8 +51,8 @@ public class UserDashboardController {
             return ResponseEntity.ok(responseDTO);
         } catch (CourseSessionNotFoundException | UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BookingResponseDTO(null, false, e.getMessage()));
-        } catch (BookingNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BookingResponseDTO(null, false, e.getMessage()));
+        } catch (BookingNotFoundException e1) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BookingResponseDTO(null, false, e1.getMessage()));
         }
     }
 
