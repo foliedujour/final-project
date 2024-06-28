@@ -1,5 +1,7 @@
 package gr.aueb.cf.springfinalproject.model;
-
+/*
+    The instance of the Course Entity in a schedule.
+ */
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.*;
@@ -50,6 +52,8 @@ public class CourseSession extends AbstractEntity {
         this.endDateTime = endDateTime;
         this.bookings = new HashSet<>();
     }
+
+    // Convenient methods
 
     public Set<Booking> fetchAllBookings() {
         return Collections.unmodifiableSet(bookings);

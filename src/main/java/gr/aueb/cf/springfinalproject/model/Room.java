@@ -21,10 +21,6 @@ public class Room extends AbstractEntity {
 
     private int capacity;
 
-
-
-
-
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     @Getter(AccessLevel.PROTECTED)
     private Set<CourseSession> sessions = new HashSet<>();

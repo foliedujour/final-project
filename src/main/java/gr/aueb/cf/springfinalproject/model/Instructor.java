@@ -50,6 +50,8 @@ public class Instructor extends AbstractEntity {
         return Collections.unmodifiableSet(courseSessions);
     }
 
+    // Convenient methods
+
     public void addCourseSession(CourseSession courseSession) {
         courseSessions.add(courseSession);
         courseSession.setInstructor(this);

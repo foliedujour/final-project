@@ -36,9 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         System.out.println("Authorization header: " + authHeader);
 
         if (jwt != null && tokenProvider.validateToken(jwt)) {
-            System.out.println(tokenProvider.validateToken(jwt));
+
             String username = tokenProvider.getUsernameFromToken(jwt);
-            Long id = tokenProvider.getUserIdFromToken(jwt);
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());
@@ -49,6 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     }
 
+    // Extracts the jwt from request
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {

@@ -11,6 +11,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+/*
+    Booking entity provides the way the user can interact with a Course Session.
+    It serves typically as an intermediate table between users and sessions.
+ */
 
 @Entity
 @Table(name = "bookings")

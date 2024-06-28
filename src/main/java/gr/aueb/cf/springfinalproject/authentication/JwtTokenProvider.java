@@ -4,16 +4,10 @@ import gr.aueb.cf.springfinalproject.model.User;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.file.attribute.UserPrincipal;
 import java.security.Key;
-import java.security.Signature;
-import java.security.SignatureException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;

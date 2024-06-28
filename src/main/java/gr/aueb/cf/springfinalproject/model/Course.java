@@ -43,6 +43,8 @@ public class Course extends AbstractEntity{
         this.instructors = new HashSet<>();
     }
 
+    // Convenient methods
+
     public Set<CourseSession> fetchAllSessions() {
         return Collections.unmodifiableSet(sessions);
     }

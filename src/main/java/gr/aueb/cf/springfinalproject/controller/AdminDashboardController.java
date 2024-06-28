@@ -86,7 +86,7 @@ public class AdminDashboardController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/course-sessions/{id}")
-    @Operation(summary = "Delete a course session", description = "Deletes a course session with the given ID")
+    @Operation(summary = "Deletes a course session", description = "Deletes a course session with the given ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Course session deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Course session not found")

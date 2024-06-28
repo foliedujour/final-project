@@ -47,7 +47,8 @@ public class AuthController {
     }
 
     @GetMapping("/welcome")
-    @Operation(summary = "Returns a welcome message", description = "Returns a welcome message for the authenticated user")
+    @Operation(summary = "Returns a welcome message",
+            description = "Returns a welcome message for the authenticated user retrieving also its username")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Welcome message retrieved successfully"),
             @ApiResponse(responseCode = "401", description = "Invalid or missing token")

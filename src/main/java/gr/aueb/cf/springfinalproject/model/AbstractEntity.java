@@ -1,5 +1,7 @@
 package gr.aueb.cf.springfinalproject.model;
-
+/*
+    An abstract class where all entities inherit from (the id)
+ */
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
